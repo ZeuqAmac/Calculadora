@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Calculadora de Carpintería</title>
+  <meta name="description" content="Calculadora de fracciones de pulgada con conversión al sistema métrico, pies tablares, espaciado uniforme y triángulos. Pensada para carpintería.">
+  <meta name="theme-color" content="#1a1d23">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1>🪚 Calculadora de Carpintería</h1>
+    <div class="precision-row" id="precisionRow" title="Precisión de redondeo de fracciones">
+      <span class="precision-label">Precisión:</span>
+      <button class="chip" data-den="8">1/8</button>
+      <button class="chip active" data-den="16">1/16</button>
+      <button class="chip" data-den="32">1/32</button>
+      <button class="chip" data-den="64">1/64</button>
+    </div>
+  </header>
+
+  <main class="app-main">
+
+    <!-- ============ CALCULADORA ============ -->
+    <section class="tab-panel active" id="tab-calc">
+      <div class="calc-display">
+        <div class="calc-expr" id="calcExpr">&nbsp;</div>
+        <div class="calc-entry" id="calcEntry">0</div>
+        <div class="calc-live" id="calcLive">&nbsp;</div>
+      </div>
+      <div class="result-panel" id="calcResult" hidden></div>
+      <div class="unit-row" id="unitRow" title="Unidad del número que estás escribiendo">
+        <button class="chip unit-chip active" data-unit="in">pulg</button>
+        <button class="chip unit-chip" data-unit="ft">pies</button>
+        <button class="chip unit-chip" data-unit="mm">mm</button>
+        <button class="chip unit-chip" data-unit="cm">cm</button>
+        <button class="chip unit-chip" data-unit="m">m</button>
+      </div>
+      <div class="keypad" id="keypad">
+        <button class="key key-fn" data-k="C">C</button>
+        <button class="key key-fn" data-k="bs">⌫</button>
+        <button class="key key-fn" data-k="sp" title="Separar entero de fracción (ej: 3 ⎵ 1 ⁄ 2)">⎵ mixto</button>
+        <button class="key key-op" data-k="/op">÷</button>
+        <button class="key" data-k="7">7</button>
+        <button class="key" data-k="8">8</button>
+        <button class="key" data-k="9">9</button>
+        <button class="key key-op" data-k="*">×</button>
+        <button class="key" data-k="4">4</button>
+        <button class="key" data-k="5">5</button>
+        <button class="key" data-k="6">6</button>
+        <button class="key key-op" data-k="-">−</button>
+        <button class="key" data-k="1">1</button>
+        <button class="key" data-k="2">2</button>
+        <button class="key" data-k="3">3</button>
+        <button class="key key-op" data-k="+">+</button>
+        <button class="key" data-k="0">0</button>
+        <button class="key" data-k=".">.</button>
+        <button class="key key-frac" data-k="frac" title="Barra de fracción (ej: 5 ⁄ 8)">⁄</button>
+        <button class="key key-eq" data-k="=">=</button>
+      </div>
+      <p class="hint">Ej: <b>3 ⎵ 1 ⁄ 2 + 5 ⁄ 8 =</b> → 4 1/8″. Puedes mezclar unidades (30 cm + 2 1/2 pulg) y multiplicar medidas para obtener áreas y volúmenes.</p>
+    </section>
+
+    <!-- ============ CONVERTIR ============ -->
+    <section class="tab-panel" id="tab-conv">
+      <h2>Convertir medidas</h2>
+      <div class="form-row">
+        <label for="convInput">Medida (acepta fracciones: <i>3 1/2</i>, <i>5/8</i>, <i>2.5</i>)</label>
+        <div class="input-group">
+          <input type="text" id="convInput" inputmode="text" placeholder="3 1/2" autocomplete="off">
+          <select id="convUnit">
+            <option value="in" selected>pulg</option>
+            <option value="ft">pies</option>
+            <option value="mm">mm</option>
+            <option value="cm">cm</option>
+            <option value="m">m</option>
+          </select>
+        </div>
+      </div>
+      <div class="result-panel" id="convResult" hidden></div>
+    </section>
+
+    <!-- ============ MATERIALES ============ -->
+    <section class="tab-panel" id="tab-bf">
+      <h2>Pies tablares y costo</h2>
+      <div class="form-grid">
+        <div class="form-row">
+          <label for="bfThick">Espesor (pulg)</label>
+          <input type="text" id="bfThick" placeholder="1" autocomplete="off">
+        </div>
+        <div class="form-row">
+          <label for="bfWidth">Ancho (pulg)</label>
+          <input type="text" id="bfWidth" placeholder="6" autocomplete="off">
+        </div>
+        <div class="form-row">
+          <label for="bfLen">Largo</label>
+          <div class="input-group">
+            <input type="text" id="bfLen" placeholder="8" autocomplete="off">
+            <select id="bfLenUnit">
+              <option value="ft" selected>pies</option>
+              <option value="in">pulg</option>
+              <option value="cm">cm</option>
+              <option value="m">m</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="bfQty">Cantidad de piezas</label>
+          <input type="number" id="bfQty" value="1" min="1" step="1">
+        </div>
+        <div class="form-row">
+          <label for="bfPrice">Precio por pie tablar (opcional)</label>
+          <input type="number" id="bfPrice" placeholder="0.00" min="0" step="0.01">
+        </div>
+      </div>
+      <button class="btn-primary" id="bfCalc">Calcular</button>
+      <div class="result-panel" id="bfResult" hidden></div>
+    </section>
+
+    <!-- ============ ESPACIADO ============ -->
+    <section class="tab-panel" id="tab-sp">
+      <h2>Espaciado uniforme</h2>
+      <p class="hint">Divide un largo en espacios iguales: balaustres, estantes, cajones… Las medidas aceptan fracciones.</p>
+      <div class="form-grid">
+        <div class="form-row">
+          <label for="spTotal">Largo total</label>
+          <div class="input-group">
+            <input type="text" id="spTotal" placeholder="36" autocomplete="off">
+            <select id="spTotalUnit">
+              <option value="in" selected>pulg</option>
+              <option value="ft">pies</option>
+              <option value="mm">mm</option>
+              <option value="cm">cm</option>
+              <option value="m">m</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="spCount">Nº de piezas intermedias</label>
+          <input type="number" id="spCount" value="4" min="0" step="1">
+        </div>
+        <div class="form-row">
+          <label for="spThick">Espesor de cada pieza (0 = solo marcas)</label>
+          <div class="input-group">
+            <input type="text" id="spThick" placeholder="0" autocomplete="off">
+            <select id="spThickUnit">
+              <option value="in" selected>pulg</option>
+              <option value="mm">mm</option>
+              <option value="cm">cm</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <button class="btn-primary" id="spCalc">Calcular</button>
+      <div class="result-panel" id="spResult" hidden></div>
+    </section>
+
+    <!-- ============ TRIÁNGULO ============ -->
+    <section class="tab-panel" id="tab-tri">
+      <h2>Triángulo / Escuadra</h2>
+      <p class="hint">Ingresa dos valores y deja vacío el que quieres calcular. Sirve para escuadrar marcos midiendo la diagonal.</p>
+      <div class="form-grid">
+        <div class="form-row">
+          <label for="triA">Lado A (base)</label>
+          <div class="input-group">
+            <input type="text" id="triA" placeholder="3" autocomplete="off">
+            <select id="triAUnit">
+              <option value="in" selected>pulg</option>
+              <option value="ft">pies</option>
+              <option value="mm">mm</option>
+              <option value="cm">cm</option>
+              <option value="m">m</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="triB">Lado B (altura)</label>
+          <div class="input-group">
+            <input type="text" id="triB" placeholder="4" autocomplete="off">
+            <select id="triBUnit">
+              <option value="in" selected>pulg</option>
+              <option value="ft">pies</option>
+              <option value="mm">mm</option>
+              <option value="cm">cm</option>
+              <option value="m">m</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="triC">Diagonal (hipotenusa)</label>
+          <div class="input-group">
+            <input type="text" id="triC" placeholder="" autocomplete="off">
+            <select id="triCUnit">
+              <option value="in" selected>pulg</option>
+              <option value="ft">pies</option>
+              <option value="mm">mm</option>
+              <option value="cm">cm</option>
+              <option value="m">m</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <button class="btn-primary" id="triCalc">Calcular</button>
+      <div class="result-panel" id="triResult" hidden></div>
+    </section>
+
+    <!-- ============ HISTORIAL ============ -->
+    <section class="tab-panel" id="tab-hist">
+      <h2>Historial</h2>
+      <div id="histList" class="hist-list"></div>
+      <button class="btn-secondary" id="histClear">Borrar historial</button>
+    </section>
+
+  </main>
+
+  <nav class="tab-bar">
+    <button class="tab-btn active" data-tab="calc"><span>🧮</span>Calc</button>
+    <button class="tab-btn" data-tab="conv"><span>📏</span>Convertir</button>
+    <button class="tab-btn" data-tab="bf"><span>🪵</span>Madera</button>
+    <button class="tab-btn" data-tab="sp"><span>📐</span>Espaciado</button>
+    <button class="tab-btn" data-tab="tri"><span>△</span>Triángulo</button>
+    <button class="tab-btn" data-tab="hist"><span>🕘</span>Historial</button>
+  </nav>
+
+  <script src="engine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
