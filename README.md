@@ -27,11 +27,11 @@ sin conexión y con todas las funciones desbloqueadas.
 
 ## Cómo publicarla (GitHub Pages)
 
-1. Fusiona esta rama en `main` (o crea el PR y haz merge).
-2. En GitHub: **Settings → Pages → Source: GitHub Actions**.
-3. El workflow `Publicar en GitHub Pages` se ejecuta solo en cada push a
-   `main` (también puedes lanzarlo a mano en la pestaña Actions).
-4. La app quedará en `https://<tu-usuario>.github.io/<repositorio>/`.
+1. En GitHub: **Settings → Pages → Source: GitHub Actions**.
+2. En la pestaña **Actions**, ejecuta el workflow `Publicar en GitHub Pages`
+   con el botón **Run workflow** (después se ejecutará solo en cada push a
+   `main` o a esta rama).
+3. La app quedará en `https://<tu-usuario>.github.io/<repositorio>/`.
 
 ## Cómo instalarla en Android
 

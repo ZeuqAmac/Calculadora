@@ -2,7 +2,7 @@ name: Publicar en GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main, claude/carpentry-converter-pwa-w1tnz1]
   workflow_dispatch:
 
 permissions:
