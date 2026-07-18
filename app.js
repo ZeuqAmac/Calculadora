@@ -150,7 +150,7 @@ function renderCalc() {
     try {
       const v = entryToValue(calc.entry);
       const mm = v.fr.mul(F(127n, 5n)).toNumber();
-      elLive.textContent = `= ${fmtNum(mm, 2)} mm · ${formatInchesAsFraction(v.fr).replace(/<[^>]*>/g, "")}`;
+      elLive.textContent = `= ${fmtNum(v.fr.toNumber(), 3)}″ · ${fmtNum(mm, 2)} mm · ${formatInchesAsFraction(v.fr).replace(/<[^>]*>/g, "")}`;
     } catch { elLive.innerHTML = "&nbsp;"; }
   } else if (calc.acc) {
     elEntry.textContent = shortValue(calc.acc);

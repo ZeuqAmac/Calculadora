@@ -1,5 +1,5 @@
 /* Service worker: la app funciona completa sin conexión. */
-const CACHE = "carpcalc-v1";
+const CACHE = "carpcalc-v2";
 const ASSETS = [
   "./",
   "./index.html",
